@@ -1,0 +1,8 @@
+# Grandeza, valor, unidade, descrição
+Ua,         220,     V,       Tensão nominal de armadura
+S,          20E3,     VA,      Potência aparente nominal
+f,          1,     Hz,      Frequência nominal
+Xd,         2,     OHM/Phi, Reatância síncrona de eixo direto
+Xq,         3,     OHM/Phi, Reatância síncrona de eixo em quadratura
+Ra,         4,     OHM,     Resistência da armadura
+P_bla,      5,     W,       Potência mecânica da máquina primária (para operação como gerador) ou potência mecânica aplicada ao eixo.
