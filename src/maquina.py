@@ -59,11 +59,74 @@ class Maquina():
         return alpha
     
     def calc_ia(self) -> complex:
+        """
+        Calcula a corrente Ia a partir do cálculo de alpha
+        """
         alpha = self.calc_alpha()
         i_a = np.cos(alpha) + 1j*np.sin(alpha)
         return i_a
+    
+    def calc_fasor_aux(self) -> complex:
+        """
+        Calcula o fasor auxuliar com v_t e i_a.
+        Consome da interface se a máquina opera como motor ou gerador
+        """
+        v_t = self.calc_v_t()
+        i_a = self.calc_ia()
+        # modo = 1 -> Motor, modo = -1 -> gerador
+        modo = 1 if self.dados_interface["motor_ou_gerador"] == "Gerador" else -1
+        fasor_a = v_t + modo*(self.dados['Ra']*i_a + 1j*self.dados["Xq"]*i_a)
+        return fasor_a
+    
+    def calc_delta(self) -> complex:
+        """
+        Calcula o valor de delta a partir do fasor auxiliar
+        """
+        fasor_a = self.calc_fasor_aux()
+        return np.angle(fasor_a)
 
-    def resultados_maquina(self):
+    
+    def calc_id(self) -> complex:
+        """
+        Calcula corrente i_d a partir de i_a, delta e
+        """
+        i_a = self.calc_ia()
+        delta = self.calc_delta()
+        alpha = self.calc_alpha()
+        i_d = i_a * np.sin(delta - alpha)
+        return i_d
+
+    def calc_iq(self) -> complex:
+        """
+        Calcula corrente iq a partir de i_a, delta e
+        """
+        i_a = self.calc_ia()
+        delta = self.calc_delta()
+        alpha = self.calc_alpha()
+        i_q = i_a * np.sin(delta - alpha)
+        return i_q
+        
+    def calc_ef(self) -> complex:
+        """
+        Calcula o valor de E_F decompondo parcialmente os resultados
+        """
+        ia       =  self.calc_ia()
+        i_d      =  self.calc_id()
+        delta    =  self.calc_delta()
+        xd_xq_id = (self.dados['Xd'] - self.dados['Xq']) * i_d
+        fasor_a  =  self.calc_fasor_aux()
+        # modo = 1 -> Motor, modo = -1 -> gerador
+        modo = 1 if self.dados_interface["motor_ou_gerador"] == "Gerador" else -1
+        
+        ef_abs = np.abs(fasor_a) + modo*xd_xq_id
+        ef = ef_abs*np.cos(delta) + 1j*ef_abs*np.cos(delta)
+        return ef
+
+
+    def resultados_maquina(self) -> Dict[str, np.number]:
+        """
+        Função auxiliar que realiza todos os cálculos e retorna um dicionário com o nome da variável e o valor correspondente
+        """
 
         res = {
             "v_t":            self.calc_v_t(),
@@ -74,7 +137,10 @@ class Maquina():
             "alpha_cap":      self.calc_alpha(),
             "alpha_uni_c":    self.calc_alpha(),
             "alpha_uni_i":    self.calc_alpha(),
-            "i_a":            self.calc_ia()
+            "i_a":            self.calc_ia(),
+            "fasor_a":        self.calc_fasor_aux(),
+            "delta":          self.calc_delta(),
+            "E_f":            self.calc_ef()
         }
 
         v_t           = self.calc_v_t()
@@ -86,6 +152,9 @@ class Maquina():
         alpha_uni_c   = self.calc_alpha()
         alpha_uni_i   = self.calc_alpha()
         i_a           = self.calc_ia()
+        fasor_a       = self.calc_fasor_aux()
+        delta         = self.calc_delta()
+        E_f           = self.calc_ef()
 
         print(f"v_t         = {v_t:<4f}")
         print(f"i_n         = {i_n:<4f}")
@@ -96,14 +165,11 @@ class Maquina():
         print(f"alpha_uni_c = {alpha_uni_c:<4f}")
         print(f"alpha_uni_i = {alpha_uni_i:<4f}")
         print(f"i_a         = {i_a:<4f}")
+        print(f"fasor_a     = {fasor_a:<4f}")
+        print(f"delta       = {delta:<4f}")
+        print(f"E_f         = {E_f:<4f}")
 
         return res
 
-        # print(f"v_t = {}")
-        # print(f"v_t = {}")
-        # print(f"v_t = {}")
-        # print(f"v_t = {}")
-        # print(f"v_t = {}")
-        # print(f"v_t = {}")
     
      
