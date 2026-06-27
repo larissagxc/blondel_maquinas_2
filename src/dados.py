@@ -5,11 +5,14 @@ from io import StringIO
 
 class Dados:
     def __init__(self, fonte: Union[str, StringIO], separador: str = ","):
-        self.dados = self._ler_dados(fonte, separador)
         self.dados_brutos = self._ler_brutos(fonte)
+        self.dados = self._ler_dados(fonte, separador)
+        self.dados_validos, _ = self.validar()
+        if self.dados_validos:
+            self.dados_limpos = self.limpar_dados(self.dados)
+        
 
-    @staticmethod
-    def _ler_dados(fonte: Union[str, StringIO], separador: str = ",") -> Dict[str, str]:
+    def _ler_dados(self, fonte: Union[str, StringIO], separador: str = ",") -> Dict[str, str]:
         """
         Lê os dados 
         """
@@ -31,8 +34,7 @@ class Dados:
             arq.close()
         return dados
 
-    @staticmethod
-    def _ler_brutos(fonte: Union[str, StringIO]) -> str:
+    def _ler_brutos(self, fonte: Union[str, StringIO]) -> str:
         if isinstance(fonte, str):
             with open(fonte) as arq:
                 return arq.read()
@@ -52,3 +54,15 @@ class Dados:
             except ValueError:
                 return False, f"Valor de {chave} ({valor}) não é numérico."
         return True, "Dicionário válido"
+    
+    def limpar_dados(self, dados: Dict) -> Dict[str, float]:
+        """
+        Converte dicionário de str, str para str, float
+        """
+        return {chave: float(valor) for chave, valor in dados.items()}
+    
+    def dados_interface(self, dados):
+        """
+        Função auxiliar apenas para atualizar os dados da interface
+        """
+        return dados
