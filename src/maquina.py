@@ -110,7 +110,6 @@ class Maquina():
         """
         Calcula o valor de E_F decompondo parcialmente os resultados
         """
-        ia       =  self.calc_ia()
         i_d      =  self.calc_id()
         delta    =  self.calc_delta()
         xd_xq_id = (self.dados['Xd'] - self.dados['Xq']) * i_d
@@ -131,13 +130,11 @@ class Maquina():
         res = {
             "v_t":            self.calc_v_t(),
             "i_n":            self.calc_i_n(),
-            "phi_08":         self.calc_phi(),
-            "phi_10":         self.calc_phi(),
-            "alpha_ind":      self.calc_alpha(),
-            "alpha_cap":      self.calc_alpha(),
-            "alpha_uni_c":    self.calc_alpha(),
-            "alpha_uni_i":    self.calc_alpha(),
+            "phi":            self.calc_phi(),
+            "alpha":          self.calc_alpha(),
             "i_a":            self.calc_ia(),
+            "i_q":            self.calc_iq(),
+            "i_d":            self.calc_id(),
             "fasor_a":        self.calc_fasor_aux(),
             "delta":          self.calc_delta(),
             "E_f":            self.calc_ef()
@@ -145,12 +142,8 @@ class Maquina():
 
         v_t           = self.calc_v_t()
         i_n           = self.calc_i_n()
-        phi_08        = self.calc_phi()
-        phi_10        = self.calc_phi()
-        alpha_ind     = self.calc_alpha()
-        alpha_cap     = self.calc_alpha()
-        alpha_uni_c   = self.calc_alpha()
-        alpha_uni_i   = self.calc_alpha()
+        phi           = self.calc_phi()
+        alpha         = self.calc_alpha()
         i_a           = self.calc_ia()
         fasor_a       = self.calc_fasor_aux()
         delta         = self.calc_delta()
@@ -158,12 +151,8 @@ class Maquina():
 
         print(f"v_t         = {v_t:<4f}")
         print(f"i_n         = {i_n:<4f}")
-        print(f"phi_08      = {phi_08:<4f}")
-        print(f"phi_10      = {phi_10:<4f}")
-        print(f"alpha_ind   = {alpha_ind:<4f}")
-        print(f"alpha_cap   = {alpha_cap:<4f}")
-        print(f"alpha_uni_c = {alpha_uni_c:<4f}")
-        print(f"alpha_uni_i = {alpha_uni_i:<4f}")
+        print(f"phi         = {phi:<4f}")
+        print(f"alpha       = {alpha:<4f}")
         print(f"i_a         = {i_a:<4f}")
         print(f"fasor_a     = {fasor_a:<4f}")
         print(f"delta       = {delta:<4f}")
