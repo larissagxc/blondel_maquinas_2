@@ -43,13 +43,8 @@ if arquivo is not None:
     else:
         c1.write("Parâmetros lidos da máquina:")
         c1.write(dados_entrada.dados)
-        maq = Maquina(dados=dados_entrada.dados_limpos, dados_interface={"fp": fp_in, "tipo_fp": tipo_fp_in})
+        maq = Maquina(dados=dados_entrada.dados_limpos, dados_interface={"fp": fp_in, "tipo_fp": tipo_fp_in, "motor_ou_gerador": modo_maquina_in})
         c1.write(maq.resultados_maquina())
-
-
-
-
-
 
 # Diagrama de Blondel
 c2.subheader('Diagrama de blondel')
