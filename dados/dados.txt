@@ -1,3 +1,7 @@
+# Não é necessário preencher as demais colunas, basta trocar o valor da grandeza (coluna 2). As demais colunas são apenas para referência.
+# Grandezas não reconhecidas serão automaticamente ignoradas
+# Grandezas faltantes, com nomes diferentes dos aqui descritos ou separados por algo diferente de ',' serão interpretadas como erro.
+# Linhas começando com "#" são ignoradas
 # Grandeza, valor, unidade, descrição
 Ua,         220,   V,       Tensão nominal de armadura
 S,          20E3,  VA,      Potência aparente nominal
@@ -6,4 +10,4 @@ Xd,         4,     OHM/Phi, Reatância síncrona de eixo direto
 Xq,         2,     OHM/Phi, Reatância síncrona de eixo em quadratura
 Ra,         0.12,  OHM,     Resistência da armadura
 P_mec,      16650, W,       Potência mecânica da máquina primária (para operação como gerador) ou potência mecânica aplicada ao eixo.
-P_blabla,      16650, W,       Potência mecânica da máquina primária (para operação como gerador) ou potência mecânica aplicada ao eixo.
+fp,         0.8,   -,       Potência mecânica da máquina primária (para operação como gerador) ou potência mecânica aplicada ao eixo.
