@@ -103,7 +103,7 @@ class Maquina():
         i_a = self.calc_ia()
         delta = self.calc_delta()
         alpha = self.calc_alpha()
-        i_q = i_a * np.sin(delta - alpha)
+        i_q = i_a * np.cos(delta - alpha)
         return i_q
         
     def calc_ef(self) -> complex:
@@ -118,7 +118,7 @@ class Maquina():
         modo = 1 if self.dados_interface["motor_ou_gerador"] == "Gerador" else -1
         
         ef_abs = np.abs(fasor_a) + modo*xd_xq_id
-        ef = ef_abs*np.cos(delta) + 1j*ef_abs*np.cos(delta)
+        ef = ef_abs*np.cos(delta) + 1j*ef_abs*np.sin(delta)
         return ef
 
 
@@ -137,7 +137,9 @@ class Maquina():
             "i_d":            self.calc_id(),
             "fasor_a":        self.calc_fasor_aux(),
             "delta":          self.calc_delta(),
-            "E_f":            self.calc_ef()
+            "E_f":            self.calc_ef(),
+            "id_phasor":      None,
+            "iq_phasor":      None,
         }
 
         v_t           = self.calc_v_t()
@@ -149,6 +151,14 @@ class Maquina():
         delta         = self.calc_delta()
         E_f           = self.calc_ef()
 
+        # Proper phasors oriented along d-axis (δ - π/2) and q-axis (δ)
+        i_d_mag = np.abs(i_a) * np.sin(delta - alpha)
+        i_q_mag = np.abs(i_a) * np.cos(delta - alpha)
+        id_phasor = i_d_mag * np.exp(1j * (delta - np.pi/2))
+        iq_phasor = i_q_mag * np.exp(1j * delta)
+        res["id_phasor"] = id_phasor
+        res["iq_phasor"] = iq_phasor
+
         print(f"v_t         = {v_t:<4f}")
         print(f"i_n         = {i_n:<4f}")
         print(f"phi         = {phi:<4f}")
@@ -157,6 +167,8 @@ class Maquina():
         print(f"fasor_a     = {fasor_a:<4f}")
         print(f"delta       = {delta:<4f}")
         print(f"E_f         = {E_f:<4f}")
+        print(f"id_phasor   = {id_phasor:<4f}")
+        print(f"iq_phasor   = {iq_phasor:<4f}")
 
         return res
 

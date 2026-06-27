@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
 import plotly.express as px
 import streamlit as st
 import pandas as pd
@@ -43,54 +44,65 @@ if arquivo is not None:
         c1.write("Parâmetros lidos da máquina:")
         c1.write(dados_entrada.dados)
         maquina = Maquina(dados=dados_entrada.dados_limpos, dados_interface={"fp": fp_in, "tipo_fp": tipo_fp_in, "motor_ou_gerador": modo_maquina_in})
-        c1.write(maquina.resultados_maquina())
+        # c1.write(maquina.resultados_maquina())
 
 # Diagrama de Blondel
 c2.subheader('Diagrama de blondel')
 
-v_t         = 127.017059 + -0.013049j
-# i_n         = 52.486388
-phi         = 0.643501
-alpha       = 0.643501
-i_a         = 0.800000+0.600000j
-fasor_a     = 128.121059-1.672000j
-# delta       = 
-E_f         = 128.365194+129.830001j
 
-phasors = np.array([v_t, phi, alpha, i_a, fasor_a, E_f])
-
-x = np.zeros(len(phasors))
-y = np.zeros(len(phasors))
-u = np.real(phasors)
-v = np.imag(phasors)
-
+# Cria um espaço pro gráfico
 fig, ax = plt.subplots()
 
-q = ax.quiver(
-    x,
-    y,
-    u,
-    v,
-    angles="xy",
-    scale_units="xy",
-    scale=1,
-    color=["tab:blue", "tab:orange", "tab:green", "tab:red"],
-    
-)
+if maquina is not None:
+    res = maquina.resultados_maquina()
 
-# 5. Format plot settings
-ax.axhline(0, color="gray", linewidth=1.5)
-ax.axvline(0, color="gray", linewidth=1.5)
-ax.set_xlim(-160, 160)
-ax.set_ylim(-160, 160)
-ax.set_xlabel(r"Real $\mathbb{R}$")
-ax.set_ylabel(r"Imaginário $\mathbb{I}$")
-ax.set_title(f"Diagrama de blondel para a Máquina")
-ax.grid(True, which="both", linestyle=":", alpha=0.7)
-ax.set_aspect("equal")  # Critical so the vectors don't look distorted
+    v_t     = res["v_t"]
+    i_a     = res["i_a"]
+    i_d     = res["id_phasor"]
+    i_q     = res["iq_phasor"]
+    fasor_a = res["fasor_a"]
+    E_f     = res["E_f"]
+    delta   = res["delta"]
+
+    # Escalona os fasores ao redor de v_t
+    v_mag = np.abs(v_t)
+    i_a_scaled = i_a * v_mag
+    i_d_scaled = i_d * v_mag
+    i_q_scaled = i_q * v_mag
+
+    phasors = np.array([v_t, i_a_scaled, i_d_scaled, i_q_scaled, fasor_a, E_f])
+    labels  = [r"$V_t$", r"$I_a$", r"$I_d$", r"$I_q$", r"$E_q$", r"$E_f$"]
+    colors  = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown"]
+
+    x = np.zeros(len(phasors))
+    y = np.zeros(len(phasors))
+    u = np.real(phasors)
+    v = np.imag(phasors)
 
 
-c2.write(f"FP = {fp_in} ({tipo_fp_in}), Modo: {modo_maquina_in}")
+    ax.quiver(x, y, u, v, angles="xy", scale_units="xy", scale=1, color=colors)
+
+    for ui, vi, lab in zip(u, v, labels):
+        ax.text(ui, vi, lab, fontsize=10, ha='center', va='bottom')
+
+    legend_handles = [Patch(color=c, label=l) for c, l in zip(colors, labels)]
+    ax.legend(handles=legend_handles, fontsize=9, loc="upper right")
+
+    max_lim = max(np.max(np.abs(u)), np.max(np.abs(v))) * 1.25
+    ax.set_xlim(-max_lim, max_lim)
+    ax.set_ylim(-max_lim, max_lim)
+    ax.set_xlabel(r"Real $\mathbb{R}$")
+    ax.set_ylabel(r"Imaginário $\mathbb{I}$")
+    ax.set_title(f"Diagrama de Blondel — {modo_maquina_in}, FP = {fp_in} ({tipo_fp_in})")
+    ax.grid(True, which="both", linestyle=":", alpha=0.7)
+    ax.set_aspect("equal")
+
+    c2.write(f"FP = {fp_in} ({tipo_fp_in}), Modo: {modo_maquina_in}, "
+             rf"$\delta$ = {np.degrees(delta):.2f}°, "
+             rf"$\phi$ = {np.degrees(res['phi']):.2f}°")
+else:
+    c2.write("Carregue um arquivo de dados para visualizar o diagrama.")
+
 c2.pyplot(fig)
 
 
