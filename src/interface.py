@@ -119,7 +119,7 @@ ax.set_xlim(-6, 6)
 ax.set_ylim(-6, 6)
 ax.set_xlabel(r"Real $\mathbb{R}$")
 ax.set_ylabel(r"Imaginário $\mathbb{I}$")
-ax.set_title(f"Curva que nao sei o que era pra ser com FP={fp_in:.1f}")
+ax.set_title(f"Curva ficticia com FP={fp_in:.1f}")
 ax.grid(True, which="both", linestyle=":", alpha=0.7)
 ax.set_aspect("equal")  # Critical so the vectors don't look distorted
 
