@@ -14,5 +14,5 @@ O presente trabalho contempla:
     1. Exemplo: `python3 -m venv virtualenv` 
 3. Ativar o ambiente virtual: `source virtualenv/bin/activate`
 4. Agora com o ambiente ativo, é possível instalar os pacotes com pip a partir de `requirements.txt: `pip install -r requirements.txt`
-5. Para rodar a interface: streamlit src/interface.py
+5. Para rodar a interface: `streamlit run src/interface.py`
     1. Aparecerá um link no terminal com o endereço local para executar o app.
